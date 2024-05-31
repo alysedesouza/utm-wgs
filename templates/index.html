@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang='en'>
 <head>
@@ -93,6 +94,8 @@
         <input type="text" id="Northing">
         <button onclick="showSelectedNumbers()">Submit</button>
         <div class="result" id="resultSection" style="display: none;">
+            <h3>Converted Values</h3>
+            <p id="result"></p>
             <h3>Converted GDA2020 Coordinates</h3>
             <p id="convertedGDA2020"></p>
             <h3>WGS84 Latitude and Longitude</h3>
@@ -102,46 +105,6 @@
     <div class="map-container">
         <div id="map"></div>
     </div>
-    <script>
-        const map = L.map('map', {
-            center: [-34.9285, 138.6007],
-            zoom: 10
-        });
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { 
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' 
-        }).addTo(map);
-
-        function showSelectedNumbers() {
-            var zoneElement = document.getElementById("zone");
-            var selectedZone = zoneElement.value;
-
-            var EastingInput = document.getElementById("Easting");
-            var Easting = parseFloat(EastingInput.value.trim());
-
-            var NorthingInput = document.getElementById("Northing");
-            var Northing = parseFloat(NorthingInput.value.trim());
-
-            if (isNaN(Easting) || isNaN(Northing)) {
-                alert("Please enter valid numerical values for Easting and Northing.");
-                return;
-            }
-
-            fetch('/convert_coordinates', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ zone: selectedZone, eastings: Easting, northings: Northing }),
-            })
-            .then(response => response.json())
-            .then(data => {
-                var resultSection = document.getElementById("resultSection");
-
-                // Display converted GDA2020 coordinates
-                var convertedGDA2020 = document.getElementById("convertedGDA2020");
-                convertedGDA2020.textContent = `Easting:
-
-
 <script>
     const map = L.map('map', {
         center: [-34.9285, 138.6007],
@@ -176,14 +139,25 @@
         .then(response => response.json())
         .then(data => {
             var resultSection = document.getElementById("resultSection");
+            var resultParagraph = document.getElementById("result");
 
-            // Display converted GDA2020 coordinates
+            resultParagraph.textContent = `Transformed Easting: ${data.transformed_easting}, Transformed Northing: ${data.transformed_northing}`;
+            resultSection.style.display = "block";
+
+            // Display converted GDA2020 coordinates in the sidebar
             var convertedGDA2020 = document.getElementById("convertedGDA2020");
             convertedGDA2020.textContent = `Easting: ${data.converted_gda2020.easting}, Northing: ${data.converted_gda2020.northing}`;
 
             // Display WGS84 lat-long
             var wgs84LatLong = document.getElementById("wgs84LatLong");
             wgs84LatLong.textContent = `Latitude: ${data.wgs84_lat_long.latitude}, Longitude: ${data.wgs84_lat_long.longitude}`;
+
+            // Add marker to the map with WGS84 lat-long and converted GDA2020 coordinates in the popup
+            const marker = L.marker([data.wgs84_lat_long.latitude, data.wgs84_lat_long.longitude]).addTo(map);
+            marker.bindPopup(`Converted GDA2020 Coordinates:<br>Easting: ${data.converted_gda2020.easting}<br>Northing: ${data.converted_gda2020.northing}`).openPopup();
+
+            // Center map on new coordinates
+            map.setView([data.wgs84_lat_long.latitude, data.wgs84_lat_long.longitude], 15); // Adjust the zoom level as needed
         })
         .catch((error) => {
             console.error('Error:', error);
@@ -191,7 +165,6 @@
         });
     }
 </script>
-
 
 
 </body>
