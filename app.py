@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify, render_template
-from pyproj import Transformer, Proj, transform
+from pyproj import Transformer
 
 app = Flask(__name__)
 
