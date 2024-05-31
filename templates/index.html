@@ -104,7 +104,7 @@
     <div class="map-container">
         <div id="map"></div>
     </div>
-    <script>
+   <script>
     const map = L.map('map', {
         center: [-34.9285, 138.6007],
         zoom: 10
@@ -143,7 +143,7 @@
             resultParagraph.textContent = `Transformed Easting: ${data.transformed_easting}, Transformed Northing: ${data.transformed_northing}`;
             resultSection.style.display = "block";
 
-            // Display converted GDA2020 coordinates
+            // Display converted GDA2020 coordinates in the sidebar
             var convertedGDA2020 = document.getElementById("convertedGDA2020");
             convertedGDA2020.textContent = `Easting: ${data.converted_gda2020.easting}, Northing: ${data.converted_gda2020.northing}`;
 
@@ -151,9 +151,9 @@
             var wgs84LatLong = document.getElementById("wgs84LatLong");
             wgs84LatLong.textContent = `Latitude: ${data.wgs84_lat_long.latitude}, Longitude: ${data.wgs84_lat_long.longitude}`;
 
-            // Add marker to the map with WGS84 lat-long
+            // Add marker to the map with WGS84 lat-long and converted GDA2020 coordinates in the popup
             const marker = L.marker([data.wgs84_lat_long.latitude, data.wgs84_lat_long.longitude]).addTo(map);
-            marker.bindPopup(`Transformed Coordinates:<br>Easting: ${data.transformed_easting}<br>Northing: ${data.transformed_northing}`).openPopup();
+            marker.bindPopup(`Converted GDA2020 Coordinates:<br>Easting: ${data.converted_gda2020.easting}<br>Northing: ${data.converted_gda2020.northing}`).openPopup();
 
             // Center map on new coordinates
             map.setView([data.wgs84_lat_long.latitude, data.wgs84_lat_long.longitude], 15); // Adjust the zoom level as needed
@@ -164,6 +164,7 @@
         });
     }
 </script>
+
 
 </body>
 </html>
