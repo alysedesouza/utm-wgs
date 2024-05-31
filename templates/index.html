@@ -144,13 +144,14 @@
       //      resultParagraph.textContent = `Transformed Easting: ${data.transformed_easting}, Transformed Northing: ${data.transformed_northing}`;
             resultSection.style.display = "block";
 
-            // Display converted GDA2020 coordinates in the sidebar
-            var convertedGDA2020 = document.getElementById("convertedGDA2020");
-            convertedGDA2020.textContent = `Easting: ${data.converted_gda2020.easting}, Northing: ${data.converted_gda2020.northing}`;
+// Display converted GDA2020 coordinates in the sidebar, rounding to 3 decimal places
+var convertedGDA2020 = document.getElementById("convertedGDA2020");
+convertedGDA2020.textContent = `Easting: ${data.converted_gda2020.easting.toFixed(3)}, Northing: ${data.converted_gda2020.northing.toFixed(3)}`;
 
-            // Display WGS84 lat-long
-            var wgs84LatLong = document.getElementById("wgs84LatLong");
-            wgs84LatLong.textContent = `Latitude: ${data.wgs84_lat_long.latitude}, Longitude: ${data.wgs84_lat_long.longitude}`;
+// Display WGS84 lat-long, rounding to 3 decimal places
+var wgs84LatLong = document.getElementById("wgs84LatLong");
+wgs84LatLong.textContent = `Latitude: ${data.wgs84_lat_long.latitude.toFixed(3)}, Longitude: ${data.wgs84_lat_long.longitude.toFixed(3)}`;
+
 
             // Add marker to the map with WGS84 lat-long and converted GDA2020 coordinates in the popup
             const marker = L.marker([data.wgs84_lat_long.latitude, data.wgs84_lat_long.longitude]).addTo(map);
