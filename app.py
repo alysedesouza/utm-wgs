@@ -23,6 +23,10 @@ from pyproj import Transformer
 
 app = Flask(__name__)
 
+@app.route('/favicon.ico')
+def favicon():
+    return '', 204
+
 @app.route('/')
 def home():
     # Renders the index.html template
